@@ -1,0 +1,27 @@
+<html>
+<head>
+	<link rel="icon" href="data:;base64,=" />
+
+	<!-- load js-lzma library and shims -->
+	<script src="src/lzma.js"></script>
+	<script src="src/lzma.shim.js"></script>
+	<script>var JSLZMA = LZMA;</script>
+
+	<!-- load closure version of the library -->
+	<script src="closure/lzma.closure.js"></script>	
+	<script>var CLOSURE_LZMA = a;</script>
+
+	<!-- load benchmark lib and deps -->
+	<script src="vendor/lodash.js"></script>
+	<script src="vendor/platform.js"></script>
+	<script src="vendor/benchmark.js"></script>
+
+	<!-- setup the benchmark suite -->
+	<script src="bench.js"></script>
+
+</head>
+<body>
+	<!-- start the benchmarks -->
+	<script>testAssets();</script>
+</body>
+</html>
