@@ -1,0 +1,65 @@
+<html>
+<head>
+	<link rel="icon" href="data:;base64,=" />
+
+    <!-- load js-lzma library and shims -->
+	<script src="../src/lzma.js"></script>
+	<script src="../src/lzma.shim.js"></script>
+	<script>var JSLZMA = LZMA;</script>
+
+	<!-- load emscripten version of the library -->
+	<script src="lzma-full.js"></script>	
+	<script>var EMSCRIPTEN_LZMA = LZMA;</script>
+
+</head>
+<body>
+	<!--Creates files in emscripten format-->
+    <div id="my" />
+	<script>
+	    var urls = ['../data/stars.names.json.lzma', '../data/stars.col.db.lzma', '../data/stars.pos.db.lzma'];
+	    var filenames = ['stars.names.json.ems', 'stars.col.db.ems', 'stars.pos.db.ems'];
+	    var buffers = [];
+
+	    function decompressBuffer(buffer) {
+	        var input = new JSLZMA.iStream(buffer);
+	        var output = new JSLZMA.oStream();
+	        JSLZMA.decompressFile(input, output);
+	        return output.toUint8Array();
+	    }
+
+	    function processData() {
+	        var html = '';
+	        for (i in buffers) {
+	            var rawBuffer = decompressBuffer(buffers[i]);
+	            var compressedData = EMSCRIPTEN_LZMA.compress(rawBuffer);
+	            var blob = new Blob([compressedData], {type: "octet/stream"});
+	            var blobURL = URL.createObjectURL(blob);
+	            var filename = filenames[i];
+	            html += "<a href=" + blobURL + " download=" + filename + ">Link " + i + "</a></br>"
+	        }
+	        document.getElementById("my").innerHTML = html;
+	    }
+
+	    function loadUrl(index) {
+	        return new Promise(function (resolve, reject) {
+	            var oReq = new XMLHttpRequest();
+	            oReq.open("GET", urls[index], true);
+	            oReq.responseType = "arraybuffer";
+	            oReq.onload = function (oEvent) {
+	                buffers[index] = oReq.response;
+	                resolve();
+	            };
+	            oReq.send();
+	        })
+	    }
+
+	    var promises = [];
+	    for (url in urls)
+	        promises.push(loadUrl(url));
+
+	    Promise.all(promises).then(processData);
+
+	    
+	</script>
+</body>
+</html>

@@ -2,13 +2,16 @@
 var urls = [
 	[
 		['js-lzma', 'data/stars.names.json.lzma'],
-		['closure-lzma', 'data/stars.names.json.lzma']
+		['closure-lzma', 'data/stars.names.json.lzma'],
+		['emscripten-lzma', 'data/stars.names.json.ems']
 	], [
 		['js-lzma', 'data/stars.col.db.lzma'],
-		['closure-lzma', 'data/stars.col.db.lzma']
+		['closure-lzma', 'data/stars.col.db.lzma'],
+		['emscripten-lzma', 'data/stars.col.db.ems']
 	], [
 		['js-lzma', 'data/stars.pos.db.lzma'],
-		['closure-lzma', 'data/stars.pos.db.lzma']
+		['closure-lzma', 'data/stars.pos.db.lzma'],
+		['emscripten-lzma', 'data/stars.pos.db.ems']
 	]
 ];
 
@@ -22,35 +25,6 @@ var names = [
 // route logs to browser window
 console.log = function(msg) {
 	document.body.innerHTML += msg + "<br>";
-}
-
-// debugger function
-function hexArr(arr)
-{
-	var bytes = [], msg = '';
-	for (var i = 0; i < arr.length; i++) {
-		var hex = arr[i].toString(16);
-		if (arr[i] < 16) hex = "0" + hex;
-		bytes.push(hex);
-		if (i % 4 == 3) {
-			// bytes.reverse();
-			msg += bytes.join(" ");
-			bytes.length = 0;
-		}
-		if (i % 8 == 7) msg += "\n";
-		else if (i % 8 == 3) msg += " ";
-	}
-	return msg += bytes.join(" ");
-}
-
-// debugger function
-function hexStr(str)
-{
-	var arr = new Uint8Array(str.length);
-	for (var i = 0; i < str.length; i++) {
-		arr[i] = test.charCodeAt(i);
-	}
-	return hexStr(arr);
 }
 
 function decodeJsLZMA(buffer)
@@ -74,10 +48,19 @@ function decodeClosureLZMA(buffer)
 	});
 }
 
+function decodeEmscriptenLZMA(buffer) {
+    return new Promise(function (resolve, reject) {
+        var input = new Uint8Array(buffer);
+        var output = EMSCRIPTEN_LZMA.decompress(input);
+        resolve(output);
+    });
+}
+
 // the decoder to test
 var decoder = {
 	'js-lzma': decodeJsLZMA,
-	'closure-lzma': decodeClosureLZMA
+	'closure-lzma': decodeClosureLZMA,
+    'emscripten-lzma': decodeEmscriptenLZMA
 };
 
 // statistics
