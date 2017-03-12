@@ -25,7 +25,7 @@ var g_maxObjects        = 250000;
 var g_numObjects        = 100;
 var g_modelsPerBlock    = 50;
 var g_targetFrameRate   = 60 - 2;  // add some fudge so browser that runs at 58-59 can still run the test
-var g_totalCount        = 0;
+var g_avgCounters       = [];
 var g_timeCounter       = 0;
 var g_benchmarkDone     = false;
 
@@ -228,12 +228,26 @@ function CreateApp() {
   };
 }
 
+function round2Fixed(value) {
+  value = +value;
+
+  if (isNaN(value))
+    return NaN;
+
+  // Shift
+  value = value.toString().split('e');
+  value = Math.round(+(value[0] + 'e' + (value[1] ? (+value[1] + 2) : 2)));
+
+  // Shift back
+  value = value.toString().split('e');
+  return (+(value[0] + 'e' + (value[1] ? (+value[1] - 2) : -2))).toFixed(2);
+}
+
 function resizeCanvas() {
   if (canvas.width != canvas.clientWidth ||
       canvas.height != canvas.clientHeight) {
     canvas.width = canvas.clientWidth;
     canvas.height = canvas.clientHeight;
-    console.log("resized canvas: " + canvas.width + ", " + canvas.height);
     gl.viewport(0, 0, canvas.clientWidth, canvas.clientHeight);
   }
 } 
@@ -247,7 +261,7 @@ function initialize() {
   var cntElem = document.getElementById("cnt");
   var avgElem = document.getElementById("avg");
 
-  var ctxOptions =  g_contextSettings || {
+  var ctxOptions = {
     alpha: false,
     antialias: false,
     preserveDrawingBuffer: false,
@@ -280,11 +294,15 @@ function initialize() {
       // Time counter is stored in SECONDS
       if (g_timeCounter > 10){
         if (g_timeCounter < 20){
-          g_totalCount += averageCount;
+          g_avgCounters.push(averageCount);
         }
         else{
-          var totalCount = g_totalCount / (g_timeCounter - 10);
-          console.log("Total count: " + totalCount);
+          var minAverage = Math.min(...g_avgCounters);
+          var maxAverage = Math.max(...g_avgCounters);
+          var meanAverage = g_avgCounters.reduce((p,c,_,a) => p + c/a.length,0);
+          var dev = (maxAverage - minAverage) / meanAverage * 100;
+          console.log("js-WebGL x " + round2Fixed(meanAverage) + " average objects drawn ± " 
+                       + round2Fixed(dev) + "% (" + g_avgCounters.length + " runs sampled)");
           g_benchmarkDone = true;
         }
       }
