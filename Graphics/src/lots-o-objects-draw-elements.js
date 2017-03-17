@@ -103,10 +103,6 @@ function CreateApp() {
   var v3t1 = new Float32Array(3);
   var v3t2 = new Float32Array(3);
   var v3t3 = new Float32Array(3);
-  var m4t0 = new Float32Array(16);
-  var m4t1 = new Float32Array(16);
-  var m4t2 = new Float32Array(16);
-  var m4t3 = new Float32Array(16);
   var zero4 = new Float32Array(4);
   var one4 = new Float32Array([1,1,1,1]);
 
