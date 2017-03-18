@@ -9,12 +9,15 @@ var amounts = [ 10, 100, 200 ];
 function runTest(data) {
     return new Promise(function (resolve, reject) {
         var dt = 1;
-        data.world.Step(dt, 2, 2);
+        if (typeof(data.Step) === "undefined") {
+            data.sd(dt, 2, 2);
+        }
+        else {
+            data.Step(dt, 2, 2);
+        }        
         resolve();
     });
 }
-
-var libraries = [ 'js-Box2D', 'closure-Box2D', 'emscripten-Box2D' ];
 
 // Different generators
 var generators = {
@@ -74,84 +77,16 @@ function executeBenchmarks()
 // Generate boxes
 function generateBoxesJS(NUM)
 {
-	return new Promise(function (resolve, reject) {
-        var NUMRANGE = [];
-        while (NUMRANGE.length < NUM) NUMRANGE.push(NUMRANGE.length+1);
-        var bodies = [null]; // Indexes start from 1
-
-        // Box2D-interfacing code
-        var gravity = new JSBox2D.Common.Math.b2Vec2(0.0, -10.0);
-        var world = new JSBox2D.Dynamics.b2World(gravity);
-        var bd_ground = new JSBox2D.Dynamics.b2BodyDef();
-        var ground = world.CreateBody(bd_ground);
-
-        var shape0 = new JSBox2D.Collision.Shapes.b2EdgeShape(
-                     new JSBox2D.Common.Math.b2Vec2(-40.0, -6.0),
-                     new JSBox2D.Common.Math.b2Vec2(40.0, -6.0));
-        ground.CreateFixture2(shape0, 0.0);
-
-        var size = 1.0;
-        var shape = new JSBox2D.Collision.Shapes.b2PolygonShape();
-        shape.SetAsBox(size, size);
-
-        var ZERO = new JSBox2D.Common.Math.b2Vec2(0.0, 0.0);
-       
-        NUMRANGE.forEach(function(i) {
-            var bd = new JSBox2D.Dynamics.b2BodyDef();
-            bd.type = JSBox2D.Dynamics.b2Body.b2_dynamicBody;
-            bd.position.Set(ZERO);
-            var body = world.CreateBody(bd);            
-            body.CreateFixture2(shape, 5.0);
-            bodies.push(body);
-        });
-
-        benchData['js-Box2D'] = {
-            world: world,
-            bodies: bodies
-        };
-
+	return new Promise(function (resolve, reject) {        
+        benchData['js-Box2D'] = JSBox2D.BoxBenchmark(NUM);
 		resolve();
 	})
 }
 
 function generateBoxesClosure(NUM)
 {
-	return new Promise(function (resolve, reject) {
-        var NUMRANGE = [];
-        while (NUMRANGE.length < NUM) NUMRANGE.push(NUMRANGE.length+1);
-        var bodies = [null]; // Indexes start from 1
-
-        // Box2D-interfacing code
-        var gravity = new ClosureBox2D.Common.Math.b2Vec2(0.0, -10.0);
-        var world = new ClosureBox2D.Dynamics.b2World(gravity);
-        var bd_ground = new ClosureBox2D.Dynamics.b2BodyDef();
-        var ground = world.CreateBody(bd_ground);
-
-        var shape0 = new ClosureBox2D.Collision.Shapes.b2EdgeShape(
-                     new ClosureBox2D.Common.Math.b2Vec2(-40.0, -6.0),
-                     new ClosureBox2D.Common.Math.b2Vec2(40.0, -6.0));
-        ground.CreateFixture2(shape0, 0.0);
-
-        var size = 1.0;
-        var shape = new ClosureBox2D.Collision.Shapes.b2PolygonShape();
-        shape.SetAsBox(size, size);
-
-        var ZERO = new ClosureBox2D.Common.Math.b2Vec2(0.0, 0.0);
-       
-        NUMRANGE.forEach(function(i) {
-            var bd = new ClosureBox2D.Dynamics.b2BodyDef();
-            bd.type = ClosureBox2D.Dynamics.b2Body.b2_dynamicBody;
-            bd.position.Set(ZERO);
-            var body = world.CreateBody(bd);            
-            body.CreateFixture2(shape, 5.0);
-            bodies.push(body);
-        });
-
-        benchData['closure-Box2D'] = {
-            world: world,
-            bodies: bodies
-        };
-
+	return new Promise(function (resolve, reject) {        
+        benchData['closure-Box2D'] = V.Sm(NUM);
 		resolve();
 	})
 }
@@ -190,11 +125,7 @@ function generateBoxesEmscripten(NUM)
             bodies.push(body);
         });
 
-        benchData['emscripten-Box2D'] = {
-            world: world,
-            bodies: bodies
-        };
-
+        benchData['emscripten-Box2D'] = world;
 		resolve();
 	})
 }

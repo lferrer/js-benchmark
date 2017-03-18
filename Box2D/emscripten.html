@@ -2,11 +2,8 @@
 <head>
 	<link rel="icon" href="data:;base64,=" />
 
-	<!-- load JS Box2D -->
-	<script src="src/Box2D.js"></script>
-
-	<!-- load closure version of the library -->
-	<script src="closure/Box2D.closure.js"></script>    
+	<!-- load emscripten version of the library -->
+	<script src="emscripten/Box2D_v2.2.1_min.js"></script>	
 
 	<!-- load benchmark lib and deps -->
 	<script src="vendor/lodash.js"></script>
@@ -20,7 +17,7 @@
 <body>
 	<!-- start the benchmarks -->
 	<script>
-		var libraries = [ 'js-Box2D', 'closure-Box2D' ];
+		var libraries = [ 'emscripten-Box2D' ];
 		testAssets();
 	</script>
 </body>

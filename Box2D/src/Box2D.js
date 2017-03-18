@@ -10872,3 +10872,39 @@ JSBox2D.postDefs = [];
 var i;
 for (i = 0; i < JSBox2D.postDefs.length; ++i) JSBox2D.postDefs[i]();
 delete JSBox2D.postDefs;
+
+// Hookup for our benchmark
+function JSBox2DBench(NUM){
+      var NUMRANGE = [];
+        while (NUMRANGE.length < NUM) NUMRANGE.push(NUMRANGE.length+1);
+        var bodies = [null]; // Indexes start from 1
+
+        // Box2D-interfacing code
+        var gravity = new JSBox2D.Common.Math.b2Vec2(0.0, -10.0);
+        var world = new JSBox2D.Dynamics.b2World(gravity);
+        var bd_ground = new JSBox2D.Dynamics.b2BodyDef();
+        var ground = world.CreateBody(bd_ground);
+
+        var shape0 = new JSBox2D.Collision.Shapes.b2EdgeShape(
+                     new JSBox2D.Common.Math.b2Vec2(-40.0, -6.0),
+                     new JSBox2D.Common.Math.b2Vec2(40.0, -6.0));
+        ground.CreateFixture2(shape0, 0.0);
+
+        var size = 1.0;
+        var shape = new JSBox2D.Collision.Shapes.b2PolygonShape();
+        shape.SetAsBox(size, size);
+
+        var ZERO = new JSBox2D.Common.Math.b2Vec2(0.0, 0.0);
+       
+        NUMRANGE.forEach(function(i) {
+            var bd = new JSBox2D.Dynamics.b2BodyDef();
+            bd.type = JSBox2D.Dynamics.b2Body.b2_dynamicBody;
+            bd.position.Set(ZERO);
+            var body = world.CreateBody(bd);            
+            body.CreateFixture2(shape, 5.0);
+            bodies.push(body);
+        });
+        world.Step(0,0,0);
+        return world;
+}
+JSBox2D.BoxBenchmark = JSBox2DBench;
