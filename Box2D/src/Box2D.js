@@ -1438,14 +1438,6 @@ JSBox2D.postDefs = [];
             this.m_radius = polygon.m_radius;
          }
          break;
-      case b2Shape.e_edgeShape:
-         {
-            var edge = (shape instanceof b2EdgeShape ? shape : null);
-            this.m_vertices = [ edge.m_v1, edge.m_v2 ];
-            this.m_count = 2;
-            this.m_radius = edge.m_length;
-         }
-         break;
       default:
          b2Settings.b2Assert(false);
       }
@@ -3565,7 +3557,7 @@ JSBox2D.postDefs = [];
    });
    b2Shape.b2Shape = function () {};
    b2Shape.prototype.Copy = function () {
-      return this;
+      return null;
    }
    b2Shape.prototype.Set = function (other) {
       this.m_radius = other.m_radius;
@@ -10879,7 +10871,7 @@ function JSBox2DBench(NUM){
         while (NUMRANGE.length < NUM) NUMRANGE.push(NUMRANGE.length+1);
         var bodies = [null]; // Indexes start from 1
 
-        // Box2D-interfacing code
+        // JSBox2D-interfacing code
         var gravity = new JSBox2D.Common.Math.b2Vec2(0.0, -10.0);
         var world = new JSBox2D.Dynamics.b2World(gravity);
         var bd_ground = new JSBox2D.Dynamics.b2BodyDef();
@@ -10904,7 +10896,6 @@ function JSBox2DBench(NUM){
             body.CreateFixture2(shape, 5.0);
             bodies.push(body);
         });
-        world.Step(0,0,0);
         return world;
 }
 JSBox2D.BoxBenchmark = JSBox2DBench;
