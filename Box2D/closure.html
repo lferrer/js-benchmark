@@ -1,9 +1,9 @@
 <html>
 <head>
-	<link rel="icon" href="data:;base64,=" />
+	<link rel="icon" href="data:;base64,=" />	
 
-	<!-- load JS version of the library -->
-	<script src="src/Box2D.js"></script>			
+	<!-- load closure version of the library -->
+	<script src="closure/Box2D.closure.js"></script>	
 
 	<!-- load benchmark lib and deps -->
 	<script src="vendor/lodash.js"></script>
@@ -17,7 +17,7 @@
 <body>
 	<!-- start the benchmarks -->
 	<script>
-		var libraries = [ 'js-Box2D' ];
+		var libraries = [ 'closure-Box2D' ];
 		testAssets();
 	</script>
 </body>
