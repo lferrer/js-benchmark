@@ -128,10 +128,14 @@ function testAssets(set)
 	images = [];
 	console.log('TESTING: ' + urls[set].length +  ' images.');
     for (var i = 0; i < urls[set].length; i++) {
-		var image = new Image();
-		image.src = urls[set][i];
-		images[images.length] = image;
-        promises.push(image.onload);
+		var promise = new Promise(function(resolve, reject){
+			var image = new Image();
+			image.src = urls[set][i];
+			image.onload = function() { resolve(); }
+			image.onerror = function() { reject(); }
+			images[images.length] = image;
+		});
+		promises.push(promise);
     }
 	// wait until all urls are loaded
 	Promise.all(promises)
