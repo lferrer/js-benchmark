@@ -1,0 +1,1 @@
+java -jar ../../closure-compiler-v20170218.jar --js ../src/ccv.js ../src/face.js --js_output_file ccv.closure.js

@@ -1,0 +1,28 @@
+<html>
+<head>
+	<link rel="icon" href="data:;base64,=" />
+
+	<!-- load javascript version of the library -->
+	<script type="text/javascript" src="src/ccv.js"></script>
+    <script type="text/javascript" src="src/face.js"></script>
+
+	<!-- load closure version of the library -->
+	<script type="text/javascript" src="closure/ccv.closure.js"></script>
+
+	<!-- load emscripten version of the library -->
+	<script type="text/javascript" src="emscripten/ccv.js"></script>
+
+	<!-- load benchmark lib and deps -->
+	<script src="vendor/lodash.js"></script>
+	<script src="vendor/platform.js"></script>
+	<script src="vendor/benchmark.js"></script>
+
+	<!-- setup the benchmark suite -->
+	<script src="bench.js"></script>
+
+</head>
+<body>
+	<!-- start the benchmarks -->
+	<script>testAssets();</script>
+</body>
+</html>
